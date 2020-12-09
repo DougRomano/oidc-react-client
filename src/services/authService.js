@@ -17,7 +17,7 @@ export default class AuthService {
         Log.logger = console;
         Log.level = Log.DEBUG;
         this.UserManager.events.addUserLoaded((user) => {
-            if (window.location.href.indexOf("signin-oidc") !== -1) {
+            if (window.location.href.indexOf("callback") !== -1) {
                 this.navigateToScreen();
             }
         });
@@ -32,56 +32,10 @@ export default class AuthService {
     }
    
     signinRedirectCallback = async (location) => {
-        const code = new URLSearchParams(location.search).get('code');
-        const state = new URLSearchParams(location.search).get('state');
-        const codeBody = {
-            code: code,
-            state: state
-        }
-        await Axios.post(`http://localhost:3100/token`, codeBody)
-        .then(function(response) {
-            console.log("Axios Response");
-            console.log(response.data);
-            console.log(response.JSON);
-            return response.data;
-        })
-        .finally(function() {
-            
+        this.UserManager.signinRedirectCallback().then(() => {
+            console.log(location);
+            console.log("Location");
         });
-
-        this.UserManager.signinRedirectCallback()
-        .then(function() {
-            console.log("Inside sign");
-        });
-        console.log("Something after await");
-
-        // const options = {
-        //     method: 'POST',
-        //     body: JSON.stringify(codeBody),
-        //     headers: {
-        //         'Content-Type': 'application/json'
-        //     },
-        //     credentials: 'include',
-        //     mode: 'no-cors',
-        // }
-        // const url = `http://localhost:3100/testpost`
-        // const result = fetch(url, options)
-        // .then(res => { 
-        //     console.log("Should have access tokens")
-        //     console.log(res.json);
-        //     console.log(res.data);
-        //     return res.json
-        // });
-        // result.then(test => {
-        //     console.log("REsutls test");
-        //     console.log(result.json);
-        //     console.log(result.data);
-        // })
-        
-     
-        // .then(function(test) {
-        //     console.log("Inside the AuthService.js")
-        // });
     };
 
 

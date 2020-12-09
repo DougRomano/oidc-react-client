@@ -17,7 +17,12 @@ export default class LogInOut extends React.Component {
     let message = 'sign in';
     let path = '';
     return (
-      <a href={this.props.uri + path}>{message}</a>
+      <div>      
+      <a href={this.props.uri + path}>Sign In</a>
+      
+      <a href="http://localhost:3100/logout?logout_challenge=abcdefghijklmnopqrstuvwxyz">Sign Out</a>
+      </div>
+
     );
   }
 }
