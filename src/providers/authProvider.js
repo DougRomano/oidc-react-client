@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import AuthService from "../services/authService";
 
 const AuthContext = React.createContext({
-    signinRedirectCallback: () => ({}),
+    signinRedirectCallback: (location) => ({location}),
     logout: () => ({}),
     signoutRedirectCallback: () => ({}),
     isAuthenticated: () => ({}),

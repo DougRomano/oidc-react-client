@@ -1,5 +1,6 @@
 import { IDENTITY_CONFIG, METADATA_OIDC } from "../utils/authConst";
 import { UserManager, WebStorageStateStore, Log } from "oidc-client";
+import Axios from "axios";
 
 export default class AuthService {
     UserManager;
@@ -29,16 +30,58 @@ export default class AuthService {
             this.logout();
         });
     }
+   
+    signinRedirectCallback = async (location) => {
+        const code = new URLSearchParams(location.search).get('code');
+        const state = new URLSearchParams(location.search).get('state');
+        const codeBody = {
+            code: code,
+            state: state
+        }
+        await Axios.post(`http://localhost:3100/token`, codeBody)
+        .then(function(response) {
+            console.log("Axios Response");
+            console.log(response.data);
+            console.log(response.JSON);
+            return response.data;
+        })
+        .finally(function() {
+            
+        });
 
-    signinRedirectCallback = () => {
-        console.log("authService.signinRedirectCallback");
         this.UserManager.signinRedirectCallback()
-        // .then(function (user) {
-        //     console.log("Get id_token: " + user);
-        //   }).catch((error) =>{
-        //     console.log("Signin redirect error " + error);
-        //     //console.info(error);
-        //   });
+        .then(function() {
+            console.log("Inside sign");
+        });
+        console.log("Something after await");
+
+        // const options = {
+        //     method: 'POST',
+        //     body: JSON.stringify(codeBody),
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     credentials: 'include',
+        //     mode: 'no-cors',
+        // }
+        // const url = `http://localhost:3100/testpost`
+        // const result = fetch(url, options)
+        // .then(res => { 
+        //     console.log("Should have access tokens")
+        //     console.log(res.json);
+        //     console.log(res.data);
+        //     return res.json
+        // });
+        // result.then(test => {
+        //     console.log("REsutls test");
+        //     console.log(result.json);
+        //     console.log(result.data);
+        // })
+        
+     
+        // .then(function(test) {
+        //     console.log("Inside the AuthService.js")
+        // });
     };
 
 
@@ -60,6 +103,7 @@ export default class AuthService {
 
 
     signinRedirect = () => {
+        Log.info("SignInRedirect")
         console.log("authService.signInRedirect");
         localStorage.setItem("redirectUri", window.location.pathname);
         this.UserManager.signinRedirect({});
@@ -91,7 +135,7 @@ export default class AuthService {
     };
     signinSilentCallback = () => {
         console.log("authService.signinSlientCallback");
-        this.UserManager.signinSilentCallback();
+        this.UserManager.signinSilentCallback()
     };
 
     createSigninRequest = () => {
