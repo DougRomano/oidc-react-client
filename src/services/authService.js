@@ -32,6 +32,10 @@ export default class AuthService {
     }
    
     signinRedirectCallback = async (location) => {
+
+        console.log("User Manager Check");
+        console.log(window.sessionStorage);
+
         this.UserManager.signinRedirectCallback().then(() => {
             console.log(location);
             console.log("Location");
